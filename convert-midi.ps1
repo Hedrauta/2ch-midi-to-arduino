@@ -89,10 +89,7 @@ function ToFile() {
         "//" | Out-File -FilePath $out -Append
         "void setup()" | Out-File -FilePath $out -Append
         "{" | Out-File -FilePath $out -Append
-        "  pinMode(4, OUTPUT);" | Out-File -FilePath $out -Append
-        "  pinMode(5, OUTPUT);" | Out-File -FilePath $out -Append
-        "  pinMode(6, OUTPUT);" | Out-File -FilePath $out -Append
-        "  pinMode(7, OUTPUT);" | Out-File -FilePath $out -Append
+        "  pinMode(0, OUTPUT);" | Out-File -FilePath $out -Append
         "}" | Out-File -FilePath $out -Append
         "//" | Out-File -FilePath $out -Append
         "void loop()" | Out-File -FilePath $out -Append
