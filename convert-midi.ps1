@@ -129,6 +129,7 @@ function ToFile() {
     $argctj = $time_array | ConvertTo-Json
     $script:outp = 1 
     ConvertTo-Ard($argctj)
+    # Todo: "Sync" ending-Delay
     "delay(1000);" | Out-File -FilePath $output -Append
     "}" | Out-File -FilePath $output -Append
 
@@ -139,6 +140,7 @@ function ToFile() {
     $argctj = $time_array2 | ConvertTo-Json
     $script:outp = 2 
     ConvertTo-Ard($argctj)
+    # Todo: "Sync" ending-Delay
     "delay(1000);" | Out-File -FilePath $output2 -Append
     "}" | Out-File -FilePath $output2 -Append
 }
