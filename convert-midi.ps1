@@ -7,6 +7,7 @@ $output = "$path\output.txt"
 $output2 = "$path\output2.txt"
 $script:work_array = @()
 $script:work_array2 = @()
+$Script:tempo = 1
 # Functions
 
 
@@ -14,6 +15,9 @@ function cMtext($file) {
     $firstend = $true
     foreach ($line in Get-Content -Path $file) {
         $split = $($line.Split(" "))
+        if ($split[1] -eq "Tempo") {
+            $script:tempo = 1 / ($($split[2]) / 500000)
+        }
         if ($($($split[0]) -contains "T") -and $firstend) {
             $script:work_array2 = $work_array
             $script:work_array = @()
@@ -106,16 +110,16 @@ function ToFile() {
         foreach ($entry in $array) {
             $freq = [System.Math]::Round(440 * [System.Math]::Pow(2, (($entry.Note - 69) / 12)))
             $ini = [Array]::indexOf($array, $entry)
-            $delay = $entry.TDur
+            $delay = [Math]::round($entry.TDur / $script:tempo)
             if($ini -lt $array.length -1) {
-                $delay = $array[$ini + 1].TStart - $entry.TStart
+                $delay = [Math]::round($($array[$ini + 1].TStart - $entry.TStart) / $script:tempo)
             }
             if ($ini -eq 0) {
                 if ($entry.TStart -gt 0) {
-                    "delay($($entry.TStart));" | Out-file -FilePath $out -Append # Initial Delay, if first note is off-time
+                    "delay($([Math]::round($entry.TStart / $script:tempo)));" | Out-file -FilePath $out -Append # Initial Delay, if first note is off-time
                 }
             }
-            "tone(0, $freq, $($entry.TDur));" | Out-File -FilePath $out -Append
+            "tone(0, $freq, $([Math]::round($entry.TDur / $script:tempo)));" | Out-File -FilePath $out -Append
             "delay($($delay));" | Out-File -FilePath $out -Append
         }
     }
@@ -144,7 +148,7 @@ function ToFile() {
 
 ""
 "Preparing midi..." #change filename to another midi-file
-Start-Process -FilePath $mf2t -WorkingDirectory $path -ArgumentList "$path\gbtetris.mid $conv_midi"
+Start-Process -FilePath $mf2t -WorkingDirectory $path -Wait -ArgumentList "$path\gbtetris.mid $conv_midi"
 "prepare text"
 cMtext($conv_midi)
 "Timings"
